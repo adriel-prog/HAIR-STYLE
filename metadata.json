@@ -1,0 +1,5 @@
+{
+  "name": "Virtual Hair Stylist",
+  "description": "An application that allows users to upload a photo and try on different hairstyles using AI. Users can describe a hairstyle, and the app will generate an image of them with the new look.",
+  "requestFramePermissions": []
+}
