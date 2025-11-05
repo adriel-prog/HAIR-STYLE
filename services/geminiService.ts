@@ -11,19 +11,15 @@ const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 export const generateHairstyle = async (
   userImageFile: File,
-  referenceImageFile: File,
+  hairstylePrompt: string,
   userPrompt: string
 ): Promise<string> => {
   try {
-    const [userBase64, referenceBase64] = await Promise.all([
-      fileToBase64(userImageFile),
-      fileToBase64(referenceImageFile),
-    ]);
+    const userBase64 = await fileToBase64(userImageFile);
     
     const userMimeType = userImageFile.type;
-    const referenceMimeType = referenceImageFile.type;
 
-    if (!userMimeType.startsWith('image/') || !referenceMimeType.startsWith('image/')) {
+    if (!userMimeType.startsWith('image/')) {
         throw new Error('Tipo de arquivo inválido. Por favor, envie uma imagem.');
     }
 
@@ -31,13 +27,10 @@ export const generateHairstyle = async (
       inlineData: { data: userBase64, mimeType: userMimeType },
     };
 
-    const referenceImagePart = {
-      inlineData: { data: referenceBase64, mimeType: referenceMimeType },
-    };
-
     const textPart = {
-      text: `You are an expert virtual hair stylist. Your task is to apply the hairstyle from the second image (the reference image) to the person in the first image (the user's photo).
+      text: `You are an expert virtual hair stylist. Your task is to apply a new hairstyle to the person in the user's photo.
 - The user's face, identity, clothes, and the background must remain completely unchanged. Only the hair should be modified.
+- The desired hairstyle is: "${hairstylePrompt}".
 - The result must be a photorealistic image that seamlessly blends the new hairstyle.
 - The output must be ONLY the edited image, with no text or other artifacts.
 ${userPrompt ? `Additional user instructions to consider: "${userPrompt}"` : ''}`
@@ -46,7 +39,7 @@ ${userPrompt ? `Additional user instructions to consider: "${userPrompt}"` : ''}
     const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash-image',
         contents: {
-            parts: [userImagePart, referenceImagePart, textPart],
+            parts: [userImagePart, textPart],
         },
         config: {
             responseModalities: [Modality.IMAGE],

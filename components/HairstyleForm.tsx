@@ -1,40 +1,38 @@
 
 import React from 'react';
 import { WandIcon } from './IconComponents';
-import { ImageUploader } from './ImageUploader';
+import { HairstyleSelector } from './HairstyleSelector';
 
 interface HairstyleFormProps {
-  onReferenceImageUpload: (file: File) => void;
-  referencePreviewUrl: string | null;
+  onSelectHairstyle: (prompt: string) => void;
+  selectedHairstyle: string | null;
   prompt: string;
   onPromptChange: (text: string) => void;
   onSubmit: () => void;
   isLoading: boolean;
   isUserImageUploaded: boolean;
-  isReferenceImageUploaded: boolean;
+  isHairstyleSelected: boolean;
 }
 
 export const HairstyleForm: React.FC<HairstyleFormProps> = ({ 
-  onReferenceImageUpload,
-  referencePreviewUrl,
+  onSelectHairstyle,
+  selectedHairstyle,
   prompt,
   onPromptChange,
   onSubmit, 
   isLoading, 
   isUserImageUploaded,
-  isReferenceImageUploaded
+  isHairstyleSelected
 }) => {
-  const isDisabled = isLoading || !isUserImageUploaded || !isReferenceImageUploaded;
+  const isDisabled = isLoading || !isUserImageUploaded || !isHairstyleSelected;
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-2xl font-bold text-white mb-4">2. Foto de Referência</h2>
-        <ImageUploader
-          onImageUpload={onReferenceImageUpload}
-          previewUrl={referencePreviewUrl}
-          title="Foto do Penteado"
-          description="Envie uma foto do estilo que você quer"
+        <h2 className="text-2xl font-bold text-white mb-4">2. Escolha um Estilo</h2>
+        <HairstyleSelector
+          onSelectHairstyle={onSelectHairstyle}
+          selectedHairstyle={selectedHairstyle}
         />
       </div>
 
