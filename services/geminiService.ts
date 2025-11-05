@@ -40,11 +40,22 @@ export const generateHairstyle = async (
     };
     parts.push(referenceImagePart);
     
-    const textPrompt = `You are an expert virtual hair stylist. Take the hairstyle from the second image (the reference) and apply it to the person in the first image (the user).
-- The person's face, identity, clothes, and the background from the first image must remain completely unchanged.
-- The result should be a photorealistic image that seamlessly blends the new hairstyle.
-- The output must be ONLY the edited image, with no text or other artifacts.
-${userPrompt ? `Additional user instructions to consider: "${userPrompt}"` : ''}`;
+    const textPrompt = `Act as a professional photo editor specializing in hairstyles. Your job is to perform a 'virtual hair transplant'.
+
+You are given two images:
+- Image 1: The original photo of a person (this is the first image I provided).
+- Image 2: A reference photo showing a hairstyle (this is the second image I provided).
+
+Your task is to meticulously edit Image 1. You must replace the hair of the person in Image 1 with the hairstyle from Image 2.
+
+**Crucial Rules:**
+- **Change ONLY the hair.**
+- The person's face, identity, expression, and skin tone in Image 1 must be perfectly preserved.
+- The background, lighting, and clothing in Image 1 must remain untouched.
+- The final image must be photorealistic and seamless.
+${userPrompt ? `- The user has provided these specific adjustments: "${userPrompt}"` : ''}
+
+Produce ONLY the final edited image as your output.`;
 
     parts.push({ text: textPrompt });
 
