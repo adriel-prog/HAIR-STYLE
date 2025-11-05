@@ -1,11 +1,11 @@
 
 import React from 'react';
 import { WandIcon } from './IconComponents';
-import { HairstyleSelector } from './HairstyleSelector';
+import { ImageUploader } from './ImageUploader';
 
 interface HairstyleFormProps {
-  onSelectHairstyle: (prompt: string) => void;
-  selectedHairstyle: string | null;
+  onReferenceImageUpload: (file: File) => void;
+  referenceImagePreviewUrl: string | null;
   prompt: string;
   onPromptChange: (text: string) => void;
   onSubmit: () => void;
@@ -15,8 +15,8 @@ interface HairstyleFormProps {
 }
 
 export const HairstyleForm: React.FC<HairstyleFormProps> = ({ 
-  onSelectHairstyle,
-  selectedHairstyle,
+  onReferenceImageUpload,
+  referenceImagePreviewUrl,
   prompt,
   onPromptChange,
   onSubmit, 
@@ -29,10 +29,12 @@ export const HairstyleForm: React.FC<HairstyleFormProps> = ({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-2xl font-bold text-white mb-4">2. Escolha um Estilo</h2>
-        <HairstyleSelector
-          onSelectHairstyle={onSelectHairstyle}
-          selectedHairstyle={selectedHairstyle}
+        <h2 className="text-2xl font-bold text-white mb-4">2. Foto de Referência</h2>
+        <ImageUploader 
+          onImageUpload={onReferenceImageUpload} 
+          previewUrl={referenceImagePreviewUrl}
+          title="Foto de Referência"
+          description="Arraste ou clique para enviar"
         />
       </div>
 

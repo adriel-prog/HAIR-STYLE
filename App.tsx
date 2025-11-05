@@ -9,7 +9,7 @@ import type { ImageState } from './types';
 
 const App: React.FC = () => {
   const [userImage, setUserImage] = useState<ImageState>({ file: null, previewUrl: null });
-  const [selectedHairstylePrompt, setSelectedHairstylePrompt] = useState<string | null>(null);
+  const [referenceImage, setReferenceImage] = useState<ImageState>({ file: null, previewUrl: null });
   const [prompt, setPrompt] = useState<string>('');
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -22,8 +22,11 @@ const App: React.FC = () => {
     setError(null);
   }, []);
   
-  const handleHairstyleSelect = useCallback((hairstylePrompt: string) => {
-    setSelectedHairstylePrompt(hairstylePrompt);
+  const handleReferenceImageUpload = useCallback((file: File) => {
+    const previewUrl = URL.createObjectURL(file);
+    setReferenceImage({ file, previewUrl });
+    setGeneratedImage(null);
+    setError(null);
   }, []);
 
   const handlePromptChange = useCallback((text: string) => {
@@ -32,8 +35,8 @@ const App: React.FC = () => {
 
 
   const handleSubmit = async () => {
-    if (!userImage.file || !selectedHairstylePrompt) {
-      setError('Por favor, envie sua foto e selecione um estilo de penteado.');
+    if (!userImage.file || !referenceImage.file) {
+      setError('Por favor, envie sua foto e uma imagem de referência.');
       return;
     }
 
@@ -42,7 +45,7 @@ const App: React.FC = () => {
     setGeneratedImage(null);
 
     try {
-      const resultImage = await generateHairstyle(userImage.file, selectedHairstylePrompt, prompt);
+      const resultImage = await generateHairstyle(userImage.file, prompt, referenceImage.file);
       setGeneratedImage(resultImage);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ocorreu um erro desconhecido.');
@@ -66,14 +69,14 @@ const App: React.FC = () => {
               description="Clique para enviar ou arraste e solte"
             />
             <HairstyleForm
-              onSelectHairstyle={handleHairstyleSelect}
-              selectedHairstyle={selectedHairstylePrompt}
+              onReferenceImageUpload={handleReferenceImageUpload}
+              referenceImagePreviewUrl={referenceImage.previewUrl}
               prompt={prompt}
               onPromptChange={handlePromptChange}
               onSubmit={handleSubmit}
               isLoading={isLoading}
               isUserImageUploaded={!!userImage.file}
-              isHairstyleSelected={!!selectedHairstylePrompt}
+              isHairstyleSelected={!!referenceImage.file}
             />
           </div>
           <div className="lg:col-span-8">
